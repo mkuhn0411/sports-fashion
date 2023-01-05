@@ -42,7 +42,6 @@ export async function savePlayer(data) {
     if (!response.ok) {
       throw response;
     }
-    
   }
 
   export async function getRatings(playerName) {
@@ -54,30 +53,20 @@ export async function savePlayer(data) {
     const playerRatingData = [];
 
     for (const key in responseData) {
-        if (responseData[key].name === playerName) {
-            playerRatingData.push(responseData[key].rating);
-        }
+      if (responseData[key].name === playerName) {
+          playerRatingData.push(responseData[key].rating);
+      }
     }
     const rating = playerRatingData.length === 0 ? 'No ratings yet' : (playerRatingData.reduce((pv, cv) => pv + cv, 0)/playerRatingData.length).toFixed(2);
     return rating;
   }
 
-
   export async function saveRating(data) {
-    console.log(data)
-    console.log(typeof(data.rating))
-
     const rating = {
       name: data.name,
       rating: data.rating,
     };
 
-    // const currentRatings = await fetch('https://player-fashion-default-rtdb.firebaseio.com/ratings.json');
-  
-    // if (post.title.trim().length < 5 || post.body.trim().length < 10) {
-    //   return { isError: true, message: 'Invalid input data provided.' };
-    // }
-  
     const response = await fetch('https://player-fashion-default-rtdb.firebaseio.com/ratings.json', {
       method: 'POST',
       body: JSON.stringify(rating),
@@ -90,7 +79,7 @@ export async function savePlayer(data) {
       throw response;
     }
 
+    //returns average player rating after rating has been added to firebase
     const playerRating = await getRatings(data.name);
-    console.log(playerRating)
     return playerRating;
   }
