@@ -1,8 +1,9 @@
-import { useReducer, useRef } from 'react';
-import { Form } from 'react-router-dom';
+import { useReducer, useRef, useContext } from 'react';
+import { Form, redirect, useNavigate } from 'react-router-dom';
 
+import { savePlayer } from '../util/api';
+import PlayerContext from '../store/player-context';
 import classes from './NewPlayerForm.module.css';
-
 
 function checkURL(url) {
     return(url.match(/\.(jpeg|jpg|gif|png|webp)$/) != null);
@@ -15,26 +16,30 @@ function checkPassword(password) {
 const ACTIONS = {
     IMAGE_INPUT: 'imageUrl',
     PASSWORD_INPUT: 'password',
-    LEAGUE_INPUT: 'league'
+    LEAGUE_INPUT: 'league',
+    NAME_INPUT: 'playerName'
 }
 
-const initialFormState = {imageUrl: '', validImage: null, password: '', validPassword: null, dropdownInvalid: null};
+const initialFormState = {name: '', imageUrl: '', validImage: null, password: '', validPassword: null,  league: '', validLeague: null};
 
 const formReducer = (state, action) => {
-    console.log(state)
     switch (action.type) {
         case ACTIONS.IMAGE_INPUT:
             return {...state, imageUrl: action.value, validImage: checkURL(action.value) && action.value.length > 0}
         case ACTIONS.PASSWORD_INPUT:
             return {...state, password: action.value , validPassword: checkPassword(action.value) && action.value.length > 0}
         case ACTIONS.LEAGUE_INPUT:
-            return {...state, validDropdown: action.value !== 'league'}
+            return {...state, league: action.value, validLeague: action.value !== 'league'}
+        case ACTIONS.NAME_INPUT:
+            return {...state, name: action.value}
         default:
             return initialFormState;
     }
 }
 
 const PlayerForm = ({ onCancel, submitting}) => {
+    const navigate = useNavigate();
+    const ctx = useContext(PlayerContext);
 
     const [formState, dispatch] = useReducer(formReducer, initialFormState);
 
@@ -43,15 +48,25 @@ const PlayerForm = ({ onCancel, submitting}) => {
         dispatch({type: name, value});
     }
 
-    const  buttonEnabled = formState.validPassword && formState.validImage && formState.validDropdown;
+    async function addPlayerHandler(event) {
+        event.preventDefault();
+        const response = await savePlayer({name: formState.name, league: formState.league, image: formState.imageUrl});
+    
+        if (response.ok) {
+            ctx.setPlayerData();
+            navigate("/");
+        }
+    }
+
+    const  buttonEnabled = formState.validPassword && formState.validImage && formState.validLeague;
 
     return (
         <section>
             <h1>Know a player with good fashion? Add them!</h1>
-            <Form className={classes.form} method='post'>
+            <Form className={classes.form} method='post' onSubmit={addPlayerHandler}>
                 <fieldset>
                     <label htmlFor='playerName'>Player Name</label>
-                    <input id='playerName' type='text' name='playerName' required />
+                    <input id='playerName' type='text' name='playerName' onChange={handleFormChange} required />
                 </fieldset>
                 <fieldset>
                 <label htmlFor='league'>Choose a league:</label>
@@ -59,22 +74,21 @@ const PlayerForm = ({ onCancel, submitting}) => {
                         <option value='value' selected disabled>League</option>
                         <option value="nba">NBA</option>
                         <option value="mlb">MLB</option>
-                        <option value="nfl">NBA</option>
+                        <option value="nba">NBA</option>
                         <option value="nhl">NHL</option>
                         <option value="nfl">NFL</option>
                         <option value="other">Other</option>
                     </select>
-                    {formState.dropdownInvalid && <p className={classes.error}>Please select a league</p>}
                 </fieldset>
                 <fieldset>
                     <label htmlFor='imageUrl'>Image Url</label>
                     <input id='imageUrl' type='text' name='imageUrl' onChange={handleFormChange} required />
-                    {formState.invalidImage && <p className={classes.error}>Please enter a valid image url</p>}
+                    {!formState.validImage && formState.imageUrl.length > 0 && <p className={classes.error}>Please enter a valid image url</p>}
                 </fieldset>
                 <fieldset>
                     <label htmlFor='password'>Password</label>
                     <input id='password' type='text' name='password' onChange={handleFormChange}required />
-                    {formState.invalidPassword && <p className={classes.error}>Please enter the correct password (Contact Mel for PW).</p>}
+                    {/* {!formState.validPassword && <p className={classes.error}>Please enter the correct password (Contact Mel for PW).</p>} */}
                 </fieldset>
                 <div className={classes.buttonContainer}>
                     <button type='button' onClick={onCancel} disabled={submitting}>Cancel</button>

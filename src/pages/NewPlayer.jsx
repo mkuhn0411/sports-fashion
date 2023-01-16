@@ -3,6 +3,7 @@ import { redirect, useActionData, useNavigate, useNavigation } from 'react-route
 import NewPlayerForm from '../components/NewPlayerForm';
 import { savePlayer } from '../util/api';
 
+
 const NewPlayer = () => {
     const data = useActionData();
 
@@ -16,6 +17,7 @@ const NewPlayer = () => {
 export default NewPlayer;
 
 export async function action({request}) {
+
     const formData = await request.formData();
     const player = {
         name: formData.get('playerName'),

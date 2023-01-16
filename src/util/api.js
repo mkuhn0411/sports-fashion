@@ -1,3 +1,4 @@
+
 export async function getPlayers() {
   const players = await fetch('https://player-fashion-default-rtdb.firebaseio.com/players.json');
 
@@ -9,11 +10,15 @@ export async function getPlayers() {
   const playerData = [];
 
   for (const key in playerResponseData) {
+    let name = playerResponseData[key].name;
+    let rating = await getRatings(name);
+
     playerData.push({
       id: key,
       name: playerResponseData[key].name,
       league: playerResponseData[key].league,
-      image: playerResponseData[key].image
+      image: playerResponseData[key].image,
+      rating
     });
   }
 
@@ -26,7 +31,7 @@ export async function savePlayer(data) {
       league: data.league,
       image: data.image
     };
-  
+    
     // if (post.title.trim().length < 5 || post.body.trim().length < 10) {
     //   return { isError: true, message: 'Invalid input data provided.' };
     // }
@@ -42,6 +47,9 @@ export async function savePlayer(data) {
     if (!response.ok) {
       throw response;
     }
+
+    return response;
+
   }
 
   export async function getRatings(playerName) {

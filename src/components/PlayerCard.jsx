@@ -14,15 +14,14 @@ const PlayerCard = ({ name, image, league }) => {
     const handleRatingChange = async ratingData => {
         const newRating = await saveRating(ratingData);
         setAverageRating(newRating);
-        
     }
 
     useEffect(() => {
         (async () => {
-            const rating = await getRatings(name);
-            setAverageRating(rating);
+            const playerRating = await getRatings(name);
+            setAverageRating(playerRating);
         })();
-     }, [averageRating]);
+     }, [setAverageRating]);
 
     let logo;
 
@@ -35,6 +34,8 @@ const PlayerCard = ({ name, image, league }) => {
           break;
         case 'nhl':
             logo = 'https://www-league.nhlstatic.com/images/logos/league-dark/133-flat.svg'
+        case 'mlb':
+            logo = 'https://www.mlbstatic.com/team-logos/league-on-dark/1.svg'
         default:
           // code block
       }
