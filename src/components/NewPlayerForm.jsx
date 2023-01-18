@@ -1,5 +1,5 @@
-import { useReducer, useRef, useContext } from 'react';
-import { Form, redirect, useNavigate } from 'react-router-dom';
+import { useReducer, useContext } from 'react';
+import { Form, useNavigate } from 'react-router-dom';
 
 import { savePlayer } from '../util/api';
 import PlayerContext from '../store/player-context';
@@ -50,7 +50,7 @@ const PlayerForm = ({ onCancel, submitting}) => {
 
     async function addPlayerHandler(event) {
         event.preventDefault();
-        const response = await savePlayer({name: formState.name, league: formState.league, image: formState.imageUrl});
+        const response = await savePlayer({name: formState.name, league: formState.league, image: formState.imageUrl, rating: 'No ratings yet'});
     
         if (response.ok) {
             ctx.setPlayerData();

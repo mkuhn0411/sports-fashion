@@ -1,11 +1,8 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import classes from './PlayerCard.module.css';
-
 import RatingContainer from './RatingContainer';
-
 import { saveRating, getRatings } from '../util/api';
-
 
 const PlayerCard = ({ name, image, league }) => {
   
