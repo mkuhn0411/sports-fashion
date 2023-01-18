@@ -11,17 +11,20 @@ export const PlayerContextProvider = props => {
     const [players, setPlayers] = useState([]);
 
     async function setPlayerData() {
-        const players = await getPlayers();
-        setPlayers(players);
+        const allPlayers = await getPlayers();
+        setPlayers(allPlayers);
     }
 
-    const setRating = ratingData => {
-        console.log(ratingData)
+    const setRating = (newAvgRating, playerName) => {
+        const playersData = [...players];
+        const playerInd = playersData.findIndex((player => player.name === playerName));
+        playersData[playerInd].rating = newAvgRating;
+        setPlayers(playersData);
     }
 
     return (
         <PlayerContext.Provider 
-            value={{ players: players, setPlayerData, setRating}}
+            value={{ players, setPlayerData, setRating}}
         >
         {props.children}</PlayerContext.Provider>
     )

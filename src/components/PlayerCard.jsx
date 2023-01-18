@@ -1,24 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 
 import classes from './PlayerCard.module.css';
 import RatingContainer from './RatingContainer';
 import { saveRating, getRatings } from '../util/api';
+import PlayerContext from '../store/player-context';
 
-const PlayerCard = ({ name, image, league }) => {
+const PlayerCard = ({ name, image, league, rating }) => {
+
+    const ctx = useContext(PlayerContext);
   
-    const [averageRating, setAverageRating] = useState();
+    const [averageRating, setAverageRating] = useState(rating);
 
     const handleRatingChange = async ratingData => {
         const newRating = await saveRating(ratingData);
+        ctx.setRating(newRating, name);
         setAverageRating(newRating);
     }
 
-    useEffect(() => {
-        (async () => {
-            const playerRating = await getRatings(name);
-            setAverageRating(playerRating);
-        })();
-     }, [setAverageRating]);
+    // useEffect(() => {
+    //     (async () => {
+    //         const playerRating = await getRatings(name);
+    //         setAverageRating(playerRating);
+    //     })();
+    //  }, [setAverageRating]);
 
     let logo;
 
