@@ -6,7 +6,6 @@ import { saveRating, getRatings } from '../util/api';
 import PlayerContext from '../store/player-context';
 
 const PlayerCard = ({ name, image, league, rating }) => {
-
     const ctx = useContext(PlayerContext);
   
     const [averageRating, setAverageRating] = useState(rating);
@@ -33,10 +32,10 @@ const PlayerCard = ({ name, image, league, rating }) => {
         case 'nfl':
             logo = 'https://static.www.nfl.com/image/upload/v1554321393/league/nvfr7ogywskqrfaiu38m.svg';
           break;
-        case 'nhl':
-            logo = 'https://www-league.nhlstatic.com/images/logos/league-dark/133-flat.svg'
         case 'mlb':
             logo = 'https://www.mlbstatic.com/team-logos/league-on-dark/1.svg'
+        case 'nhl':
+            logo = 'https://www-league.nhlstatic.com/images/logos/league-dark/133-flat.svg'
         default:
           // code block
       }

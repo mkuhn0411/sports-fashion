@@ -4,6 +4,7 @@ import { getPlayers } from '../util/api';
 const PlayerContext = React.createContext({
     players: [],
     setPlayerData: () => {},
+    sortPlayer: () => {},
     setRating: () => {}
 });
 
@@ -12,6 +13,7 @@ export const PlayerContextProvider = props => {
 
     async function setPlayerData() {
         const allPlayers = await getPlayers();
+        console.log(allPlayers)
         setPlayers(allPlayers);
     }
 
@@ -22,9 +24,22 @@ export const PlayerContextProvider = props => {
         setPlayers(playersData);
     }
 
+    const sortPlayers = sortMethod => {
+        let currPlayers = [...players];
+        let sortedPlayers;
+
+        if (sortMethod === 'ascending') {
+            sortedPlayers = currPlayers.sort(function(a,b){return a.rating-b.rating});
+        } else if (sortMethod === 'descending') {
+            sortedPlayers = currPlayers.sort(function(a,b){return b.rating-a.rating});
+        } 
+
+        setPlayers(sortedPlayers);
+    }
+
     return (
         <PlayerContext.Provider 
-            value={{ players, setPlayerData, setRating}}
+            value={{ players, setPlayerData, setRating, sortPlayers}}
         >
         {props.children}</PlayerContext.Provider>
     )
