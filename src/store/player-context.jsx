@@ -13,7 +13,6 @@ export const PlayerContextProvider = props => {
 
     async function setPlayerData() {
         const allPlayers = await getPlayers();
-        console.log(allPlayers)
         setPlayers(allPlayers);
     }
 
@@ -24,7 +23,7 @@ export const PlayerContextProvider = props => {
         setPlayers(playersData);
     }
 
-    const sortPlayers = sortMethod => {
+    const sortPlayers = async sortMethod => {
         let currPlayers = [...players];
         let sortedPlayers;
 
@@ -32,7 +31,11 @@ export const PlayerContextProvider = props => {
             sortedPlayers = currPlayers.sort(function(a,b){return a.rating-b.rating});
         } else if (sortMethod === 'descending') {
             sortedPlayers = currPlayers.sort(function(a,b){return b.rating-a.rating});
-        } 
+        } else if (sortMethod === 'all') {
+            sortedPlayers = await getPlayers();
+        } else  {
+            sortedPlayers = currPlayers.filter(player => player.league === sortMethod);
+        }
 
         setPlayers(sortedPlayers);
     }

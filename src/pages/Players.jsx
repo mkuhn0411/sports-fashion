@@ -8,21 +8,9 @@ import PlayerContext from '../store/player-context';
 
 const Players = () => {
     // const loaderData = useLoaderData();
-
-    // const [allPlayers, setAllPlayers] = useState([]);
     const ctx = useContext(PlayerContext);
     const players = ctx.players;
     
-    // useEffect(() => {
-    //     const players = ctx.players;
-    //     setAllPlayers(players);
-    // }, []);
-    
-
-    // const onSort = sortMethod => {
-    //     console.log(sortMethod)
-    // }
-
     return (
         <>
             <SortDropdown />
